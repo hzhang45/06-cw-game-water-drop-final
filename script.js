@@ -35,11 +35,11 @@ const difficultySettings = {
     label: "Normal"
   },
   hard: {
-    time: 20,
+    time: 22,
     target: 25,
-    spawnRate: 600,
-    badDropChance: 0.3,
-    bonusDropChance: 0.08,
+    spawnRate: 650,
+    badDropChance: 0.2,
+    bonusDropChance: 0.12,
     label: "Hard"
   }
 };
