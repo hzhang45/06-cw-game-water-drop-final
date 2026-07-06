@@ -11,9 +11,16 @@
         <img class="charity-logo" src="img/cw_logo-horizontal.png" alt="charity: water logo">
         <h1 class="game-title">Water Drop</h1>
         <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
+        <div class="difficulty-selector" aria-label="Difficulty selector">
+            <span class="difficulty-label">Difficulty:</span>
+            <button class="difficulty-btn active" data-difficulty="normal">Normal</button>
+            <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+            <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+        </div>
         <div class="score-panel">
             <div class="score">Score: <span id="score">0</span></div>
             <div class="timer">Time: <span id="time">30</span>s</div>
+            <div class="target">Target: <span id="target">20</span></div>
             <div class="button-group">
                 <button id="start-btn">Start Game</button>
                 <button id="reset-btn">Reset</button>

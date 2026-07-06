@@ -5,28 +5,81 @@ let timerInterval;
 let score = 0;
 let timeLeft = 30;
 let dropCount = 0;
+let currentDifficulty = "normal";
 
 const startButton = document.getElementById("start-btn");
 const resetButton = document.getElementById("reset-btn");
 const scoreDisplay = document.getElementById("score");
 const timeDisplay = document.getElementById("time");
+const targetDisplay = document.getElementById("target");
 const gameContainer = document.getElementById("game-container");
 const gameMessage = document.getElementById("game-message");
 const confettiLayer = document.getElementById("confetti-layer");
+const difficultyButtons = document.querySelectorAll(".difficulty-btn");
+
+const difficultySettings = {
+  easy: {
+    time: 45,
+    target: 15,
+    spawnRate: 1000,
+    badDropChance: 0.12,
+    bonusDropChance: 0.08,
+    label: "Easy"
+  },
+  normal: {
+    time: 30,
+    target: 20,
+    spawnRate: 800,
+    badDropChance: 0.2,
+    bonusDropChance: 0.12,
+    label: "Normal"
+  },
+  hard: {
+    time: 20,
+    target: 25,
+    spawnRate: 600,
+    badDropChance: 0.3,
+    bonusDropChance: 0.08,
+    label: "Hard"
+  }
+};
 
 startButton.addEventListener("click", startGame);
 resetButton.addEventListener("click", resetGame);
 
+difficultyButtons.forEach((button) => {
+  button.addEventListener("click", () => selectDifficulty(button.dataset.difficulty));
+});
+
+function selectDifficulty(difficulty) {
+  currentDifficulty = difficulty;
+  difficultyButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.difficulty === difficulty);
+  });
+
+  const settings = difficultySettings[currentDifficulty];
+  timeLeft = settings.time;
+  timeDisplay.textContent = timeLeft;
+  targetDisplay.textContent = settings.target;
+  gameMessage.textContent = `${settings.label} mode selected.`;
+
+  if (!gameRunning) {
+    resetGame(false);
+  }
+}
+
 function startGame() {
   if (gameRunning) return;
 
+  const settings = difficultySettings[currentDifficulty];
   score = 0;
-  timeLeft = 30;
+  timeLeft = settings.time;
   dropCount = 0;
   gameRunning = true;
-  gameMessage.textContent = "";
+  gameMessage.textContent = `Good luck in ${settings.label} mode!`;
   scoreDisplay.textContent = score;
   timeDisplay.textContent = timeLeft;
+  targetDisplay.textContent = settings.target;
   startButton.disabled = true;
   startButton.textContent = "Game in Progress";
 
@@ -34,23 +87,27 @@ function startGame() {
   clearInterval(dropMaker);
   clearInterval(timerInterval);
 
-  dropMaker = setInterval(createDrop, 800);
+  dropMaker = setInterval(createDrop, settings.spawnRate);
   timerInterval = setInterval(updateTimer, 1000);
   createDrop();
 }
 
-function resetGame() {
+function resetGame(shouldClearMessage = true) {
   gameRunning = false;
   clearInterval(dropMaker);
   clearInterval(timerInterval);
   clearDrops();
 
+  const settings = difficultySettings[currentDifficulty];
   score = 0;
-  timeLeft = 30;
+  timeLeft = settings.time;
   dropCount = 0;
   scoreDisplay.textContent = score;
   timeDisplay.textContent = timeLeft;
-  gameMessage.textContent = "";
+  targetDisplay.textContent = settings.target;
+  if (shouldClearMessage) {
+    gameMessage.textContent = "";
+  }
   startButton.disabled = false;
   startButton.textContent = "Start Game";
 }
@@ -59,13 +116,22 @@ function createDrop() {
   if (!gameRunning) return;
 
   dropCount += 1;
-  const isBadDrop = dropCount % 5 === 0;
+  const settings = difficultySettings[currentDifficulty];
+  const roll = Math.random();
+  let dropClass = "";
+  let pointsValue = 1;
+
+  if (roll < settings.bonusDropChance) {
+    dropClass = "bonus-drop";
+    pointsValue = 2;
+  } else if (roll < settings.badDropChance + settings.bonusDropChance) {
+    dropClass = "bad-drop";
+    pointsValue = -1;
+  }
 
   const drop = document.createElement("div");
-  drop.className = "water-drop";
-  if (isBadDrop) {
-    drop.classList.add("bad-drop");
-  }
+  drop.className = `water-drop ${dropClass}`.trim();
+  drop.dataset.points = String(pointsValue);
 
   const initialSize = 60;
   const sizeMultiplier = Math.random() * 0.8 + 0.5;
@@ -77,7 +143,7 @@ function createDrop() {
   const xPosition = Math.random() * Math.max(0, gameWidth - size);
   drop.style.left = `${xPosition}px`;
   drop.style.top = "-20px";
-  drop.style.animationDuration = "4s";
+  drop.style.animationDuration = `${4 + Math.random() * 0.7}s`;
 
   drop.addEventListener("click", () => collectDrop(drop));
   gameContainer.appendChild(drop);
@@ -92,13 +158,14 @@ function createDrop() {
 function collectDrop(drop) {
   if (!gameRunning) return;
 
+  const pointsValue = Number(drop.dataset.points || 1);
   drop.remove();
-  if (drop.classList.contains("bad-drop")) {
-    score = Math.max(0, score - 1);
-  } else {
-    score += 1;
-  }
+  score = Math.max(0, score + pointsValue);
   scoreDisplay.textContent = score;
+
+  if (pointsValue > 1) {
+    gameMessage.textContent = "Bonus drop! Your impact just got bigger.";
+  }
 }
 
 function updateTimer() {
@@ -149,7 +216,10 @@ function launchConfetti() {
 }
 
 function showEndMessage() {
-  if (score >= 20) {
+  const settings = difficultySettings[currentDifficulty];
+  const target = settings.target;
+
+  if (score >= target) {
     launchConfetti();
   }
 
@@ -167,7 +237,7 @@ function showEndMessage() {
     "You’re getting closer—try another round."
   ];
 
-  const isWin = score >= 20;
+  const isWin = score >= target;
   const messages = isWin ? winningMessages : losingMessages;
   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
   gameMessage.textContent = `${randomMessage} Final score: ${score}.`;

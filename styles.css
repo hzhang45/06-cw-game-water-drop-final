@@ -47,6 +47,35 @@ body {
     height: auto;
 }
 
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.difficulty-label {
+    font-weight: bold;
+    color: #0f4c81;
+}
+
+.difficulty-btn {
+    padding: 8px 12px;
+    border: 2px solid #2e9df7;
+    border-radius: 999px;
+    background-color: white;
+    color: #2e9df7;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.difficulty-btn.active {
+    background-color: #2e9df7;
+    color: white;
+}
+
 .score-panel {
     display: flex;
     justify-content: space-between;
@@ -56,10 +85,13 @@ body {
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(46, 157, 247, 0.16);
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .timer,
-.score {
+.score,
+.target {
     flex: 0 1 auto;
     font-size: 24px;
     font-weight: bold;
@@ -146,6 +178,12 @@ body {
     background: radial-gradient(circle at 30% 30%, #ffe1e1 0%, #ff7f7f 35%, #f5402c 75%, #a61d14 100%);
     border: 2px solid #8f140d;
     box-shadow: 0 8px 14px rgba(165, 29, 20, 0.25);
+}
+
+.bonus-drop {
+    background: radial-gradient(circle at 30% 30%, #fff9da 0%, #ffe38d 35%, #ffc907 75%, #b57f00 100%);
+    border: 2px solid #b57f00;
+    box-shadow: 0 8px 14px rgba(181, 127, 0, 0.25);
 }
 
 .game-title {
