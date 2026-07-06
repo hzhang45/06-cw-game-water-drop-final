@@ -26,12 +26,13 @@ Fonts:
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 24px;
     background: linear-gradient(135deg, #eaf7ff 0%, #f8fcff 100%);
-    font-family: Arial, sans-serif;
+    font-family: "Proxima Nova", "Avenir", Arial, sans-serif;
 }
 
 .game-wrapper {
@@ -40,6 +41,21 @@ body {
     align-items: center;
     gap: 16px;
     width: min(900px, 100%);
+}
+
+.site-footer {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.site-footer a {
+    color: #0f4c81;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
 }
 
 .charity-logo {
