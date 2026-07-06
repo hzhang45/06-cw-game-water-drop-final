@@ -17,6 +17,13 @@ const gameMessage = document.getElementById("game-message");
 const confettiLayer = document.getElementById("confetti-layer");
 const difficultyButtons = document.querySelectorAll(".difficulty-btn");
 
+const milestoneMessages = [
+  { threshold: 5, message: "You’re off to a great start!" },
+  { threshold: 10, message: "Halfway there! Keep going!" },
+  { threshold: 15, message: "You’re making a real splash!" },
+  { threshold: 20, message: "Amazing momentum!" }
+];
+
 const difficultySettings = {
   easy: {
     time: 45,
@@ -169,6 +176,11 @@ function collectDrop(drop) {
 
   if (pointsValue > 1) {
     gameMessage.textContent = "Bonus drop! Your impact just got bigger.";
+  }
+
+  const milestone = milestoneMessages.find((entry) => score >= entry.threshold && score - pointsValue < entry.threshold);
+  if (milestone) {
+    gameMessage.textContent = milestone.message;
   }
 }
 
