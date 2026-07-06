@@ -38,6 +38,7 @@ const difficultySettings = {
     time: 22,
     target: 25,
     spawnRate: 650,
+    fallSpeed: 0.9,
     badDropChance: 0.2,
     bonusDropChance: 0.12,
     label: "Hard"
@@ -143,7 +144,10 @@ function createDrop() {
   const xPosition = Math.random() * Math.max(0, gameWidth - size);
   drop.style.left = `${xPosition}px`;
   drop.style.top = "-20px";
-  drop.style.animationDuration = `${4 + Math.random() * 0.7}s`;
+  const fallDuration = settings.fallSpeed
+    ? `${(4 / settings.fallSpeed) + Math.random() * 0.3}s`
+    : `${4 + Math.random() * 0.7}s`;
+  drop.style.animationDuration = fallDuration;
 
   drop.addEventListener("click", () => collectDrop(drop));
   gameContainer.appendChild(drop);
