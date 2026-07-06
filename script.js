@@ -17,6 +17,9 @@ const gameMessage = document.getElementById("game-message");
 const confettiLayer = document.getElementById("confetti-layer");
 const difficultyButtons = document.querySelectorAll(".difficulty-btn");
 
+const dropSound = new Audio("freesound_community-water-drop-3-84577.mp3");
+const winSound = new Audio("universfield-birthday-party-horn-250238.mp3");
+
 const milestoneMessages = [
   { threshold: 5, message: "You’re off to a great start!" },
   { threshold: 10, message: "Halfway there! Keep going!" },
@@ -173,6 +176,8 @@ function collectDrop(drop) {
   drop.remove();
   score = Math.max(0, score + pointsValue);
   scoreDisplay.textContent = score;
+  dropSound.currentTime = 0;
+  dropSound.play().catch(() => {});
 
   if (pointsValue > 1) {
     gameMessage.textContent = "Bonus drop! Your impact just got bigger.";
@@ -237,6 +242,8 @@ function showEndMessage() {
 
   if (score >= target) {
     launchConfetti();
+    winSound.currentTime = 0;
+    winSound.play().catch(() => {});
   }
 
   const winningMessages = [
